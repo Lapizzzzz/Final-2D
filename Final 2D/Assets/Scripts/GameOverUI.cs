@@ -7,7 +7,13 @@ public class GameOverUI : MonoBehaviour
     // Add member variables to store references to the Text Components for the
     //      various points texts.
 
-    private string _itemString = "Final score: ";
+    [SerializeField] private TMP_Text _resultText;
+
+    public void ShowChecklistResult(int kicked, int required)
+    {
+        gameObject.SetActive(true);
+        _resultText.text = "Items kicked: " + kicked + " / " + required;
+    }
 
     // ------------------------------------------------------------------------
     public void Activate(int commonPoints, int uncommonPoints, int rarePoints, int finalPoints)

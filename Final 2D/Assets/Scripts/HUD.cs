@@ -6,13 +6,21 @@ public class HUD : MonoBehaviour
 {
     [SerializeField] private Transform _checklistParent;
     [SerializeField] private ChecklistItemUI _checklistItemPrefab;
-    // Add member variables for all of the Text you'll need to update.
+    [SerializeField] private TMP_Text _timerText;
 
-    private List<ChecklistItemUI> _checklistItems;
+    private List<ChecklistItemUI> _checklistItems = new List<ChecklistItemUI>();
 
     // ------------------------------------------------------------------------
     public void SetRequiredItems (List<GameObject> items)
     {
+        foreach (ChecklistItemUI oldItem in _checklistItems) Destroy(oldItem.gameObject);
+        _checklistItems.Clear();
+        foreach (GameObject item in items)
+        {
+            ChecklistItemUI entry = Instantiate(_checklistItemPrefab, _checklistParent);
+            entry.SetItem(item);
+            _checklistItems.Add(entry);
+        }
         // For every entry in 'items',
         //      create a new ChecklistItemUI GameObject.
         // Set its parent to _checklistParent.
@@ -26,6 +34,14 @@ public class HUD : MonoBehaviour
         // Find the ChecklistItem in _checklistItems whose required item is the
         //      'item' input for this method.
         // Tell that item we found it!
+        foreach (ChecklistItemUI entry in _checklistItems)
+        {
+            if (entry._requiredItem == item)
+            {
+                entry.FoundItem();
+                break;
+            }
+        }
     }
 
     // ------------------------------------------------------------------------
@@ -38,5 +54,6 @@ public class HUD : MonoBehaviour
     public void UpdateTimerText (float timeLeft)
     {
         // Update the timer text.
+        _timerText.text = Mathf.Max(0f, timeLeft).ToString("0.0") + "s";
     }
 }
